@@ -18,7 +18,7 @@ namespace API
 {
     public class Startup
     {
-        public IConfiguration _config { get; }
+        private readonly IConfiguration _config;
       
         public Startup(IConfiguration config)
         {
@@ -34,6 +34,7 @@ namespace API
         {
 
             services.AddControllers();
+            services.AddCors();
             services.AddDbContext<DataContext>(options =>
             {
                 options.UseSqlite(_config.GetConnectionString("DefaultConnection"));
@@ -57,7 +58,8 @@ namespace API
             app.UseHttpsRedirection();
 
             app.UseRouting();
-
+            //Cors should be added between UserRouting & Use Endpoints
+            app.UseCors(x =>x.AllowAnyHeader().AllowAnyMethod().WithOrigins("https://localhost:4200"));
             app.UseAuthorization();
 
             app.UseEndpoints(endpoints =>
