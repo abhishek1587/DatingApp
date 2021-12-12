@@ -31,11 +31,12 @@ export class NavComponent implements OnInit {
         //console.log(response);
         this.router.navigateByUrl('/members');
         //this.loggedin = true;
-      },
+      }
+      /*,
       (error) => {
         console.log(error);
-        this.toastr.error(error.error)
-      }
+        //this.toastr.error(error.error)
+      }*/
     );
   }
   logout() {
