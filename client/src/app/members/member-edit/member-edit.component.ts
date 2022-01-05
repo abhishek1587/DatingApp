@@ -1,0 +1,55 @@
+import { Component, HostListener, OnInit, ViewChild } from '@angular/core';
+import { NgForm } from '@angular/forms';
+import { ToastrService } from 'ngx-toastr';
+import { take } from 'rxjs/operators';
+import { Member } from 'src/app/_models/member';
+import { User } from 'src/app/_models/User';
+import { AccountService } from 'src/app/_services/account.service';
+import { MembersService } from 'src/app/_services/members.service';
+
+@Component({
+  selector: 'app-member-edit',
+  templateUrl: './member-edit.component.html',
+  styleUrls: ['./member-edit.component.css'],
+})
+export class MemberEditComponent implements OnInit {
+
+  @ViewChild('editForm') editform!:NgForm;
+  member!: Member;
+  user!: User;
+
+  //prevent the user to close the browser window accidently
+  @HostListener('window:beforeunload',['$event']) unloadNotificaiton($event:any){
+    if(this.editform.dirty){
+      $event.returnValue=true;
+    }
+  }
+
+  constructor(
+    private accountService: AccountService,
+    private memberService: MembersService,
+    private toastr:ToastrService
+  ) {
+    this.accountService.currentUser$.pipe(take(1)).subscribe((x) => (this.user = x));
+  }
+
+  ngOnInit(): void {
+    this.loadMember();
+  }
+
+  loadMember() {
+    this.memberService.getMember(this.user.username).subscribe((member) => {
+      this.member = member;
+    });
+  }
+
+  updateMember(){
+    console.log(this.member);
+    this.memberService.updateMember(this.member).subscribe(
+      () =>{
+        this.toastr.success('Profile update successfully');
+        this.editform.reset(this.member);
+      }
+    )
+  }
+}
