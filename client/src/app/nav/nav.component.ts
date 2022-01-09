@@ -22,6 +22,7 @@ export class NavComponent implements OnInit {
   ngOnInit(): void {
     //this.getCurrentUser();
     //this.currentUser$ = this.accountService.currentUser$;
+
   }
 
   login() {
